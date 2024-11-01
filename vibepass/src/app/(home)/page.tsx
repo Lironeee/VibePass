@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -28,8 +28,33 @@ export default function Component() {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1])
   const scale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1])
 
+  useEffect(() => {
+    const createStar = () => {
+      const star = document.createElement('div')
+      star.className = 'star'
+      star.style.left = `${Math.random() * 100}vw`
+      star.style.top = `${Math.random() * 100}vh`
+      star.style.animationDuration = `${Math.random() * 3 + 2}s`
+      const starryBackground = document.getElementById('starry-background')
+      if (starryBackground) {
+        starryBackground.appendChild(star)
+      }
+
+      setTimeout(() => {
+        star.remove()
+      }, 5000)
+    }
+
+    const interval = setInterval(createStar, 200)
+
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-black to-purple-900 text-white overflow-hidden">
+      {/* Starry Background */}
+      <div id="starry-background" className="absolute inset-0 overflow-hidden pointer-events-none" />
+
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10">
         {/* Animated Wave SVG */}
@@ -139,9 +164,9 @@ export default function Component() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-xl"
+        className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-xl"
       >
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container flex flex-col md:flex-row items-center justify-between py-4 md:py-6 space-y-4 md:space-y-0">
           <motion.div 
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400 }}
@@ -154,7 +179,7 @@ export default function Component() {
               className="h-8 w-auto brightness-0 invert"
             />
           </motion.div>
-          <div className="flex flex-1 items-center justify-between space-x-4 md:justify-end">
+          <div className="flex flex-1 items-center justify-center md:justify-end space-x-4">
             <div className="w-full max-w-[400px]">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/50" />
@@ -182,7 +207,7 @@ export default function Component() {
         </div>
       </motion.header>
 
-      <main className="relative">
+      <main className="relative w-full">
         <section className="container px-4 py-12 md:py-24 lg:py-32">
           <motion.div 
             initial="hidden"
@@ -268,9 +293,27 @@ export default function Component() {
                 </motion.div>
               ))}
             </div>
+          
           </motion.div>
         </section>
       </main>
+
+      <style jsx global>{`
+        .star {
+          position: absolute;
+          width: 2px;
+          height: 2px;
+          background: white;
+          border-radius: 50%;
+          animation: twinkle linear infinite;
+        }
+
+        @keyframes twinkle {
+          0% { opacity: 0; }
+          50% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `}</style>
     </div>
   )
 }
