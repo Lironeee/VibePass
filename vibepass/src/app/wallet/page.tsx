@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Clock, MapPin, Ticket, ArrowRight } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Ticket,
+  ArrowRight,
+  DollarSign,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -75,11 +82,47 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0 },
 };
 
+const Sparkle = ({ style }: { style: React.CSSProperties }) => (
+  <motion.div
+    className="absolute rounded-full bg-white"
+    style={{
+      width: Math.random() * 3 + 1,
+      height: Math.random() * 3 + 1,
+      ...style,
+    }}
+    animate={{
+      scale: [1, 1.5, 1],
+      opacity: [1, 0.5, 1],
+    }}
+    transition={{
+      duration: Math.random() * 2 + 1,
+      repeat: Infinity,
+      repeatType: "reverse",
+    }}
+  />
+);
+
+const AnimatedBackground = () => {
+  const sparkles = Array.from({ length: 50 }).map((_, i) => (
+    <Sparkle
+      key={i}
+      style={{
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+      }}
+    />
+  ));
+
+  return <div className="fixed inset-0 pointer-events-none">{sparkles}</div>;
+};
+
 export default function WalletPage() {
   const [tickets, setTickets] = useState<TicketData[]>(mockTickets);
   const [isTransferDialogOpen, setIsTransferDialogOpen] = useState(false);
+  const [isResellDialogOpen, setIsResellDialogOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<TicketData | null>(null);
   const [transferEmail, setTransferEmail] = useState("");
+  const [resellPrice, setResellPrice] = useState("");
 
   const handleTransferTicket = (ticketId: string) => {
     setTickets(tickets.filter((ticket) => ticket.id !== ticketId));
@@ -88,12 +131,20 @@ export default function WalletPage() {
     setTransferEmail("");
   };
 
+  const handleResellTicket = (ticketId: string) => {
+    setTickets(tickets.filter((ticket) => ticket.id !== ticketId));
+    setIsResellDialogOpen(false);
+    setSelectedTicket(null);
+    setResellPrice("");
+  };
+
   const handleAddToAppleWallet = (ticket: TicketData) => {
     alert(`Ticket ${ticket.id} added to Apple Wallet`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black text-white overflow-hidden">
+      <AnimatedBackground />
       <Header />
       <motion.div
         initial="hidden"
@@ -106,7 +157,7 @@ export default function WalletPage() {
           },
         }}
       >
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 relative">
           <motion.h1
             variants={fadeInUp}
             className="text-4xl font-bold mt-4 mb-8"
@@ -162,60 +213,75 @@ export default function WalletPage() {
                   <span className="text-lg font-bold">
                     ${ticket.price.toFixed(2)}
                   </span>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="bg-purple-600 hover:bg-purple-700 text-white"
-                      >
-                        View Ticket
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="bg-gray-900 text-white">
-                      <DialogHeader>
-                        <DialogTitle>{ticket.eventName} Ticket</DialogTitle>
-                        <DialogDescription className="text-gray-400">
-                          Ticket ID: {ticket.id}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="flex flex-col items-center space-y-4">
-                        <div className="bg-white p-4 rounded-lg">
-                          <QRCode value={ticket.id} size={200} level="H" />
-                        </div>
-                        <div className="text-center">
-                          <p>{ticket.seatInfo}</p>
-                          <p>
-                            {new Date(ticket.date).toLocaleDateString("en-US", {
-                              weekday: "long",
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}{" "}
-                            at {ticket.time}
-                          </p>
-                          <p>{ticket.location}</p>
-                        </div>
-                      </div>
-                      <DialogFooter className="flex justify-between">
+                  <div className="space-x-2">
+                    <Dialog>
+                      <DialogTrigger asChild>
                         <Button
                           variant="outline"
                           className="bg-purple-600 hover:bg-purple-700 text-white"
-                          onClick={() => {
-                            setSelectedTicket(ticket);
-                            setIsTransferDialogOpen(true);
-                          }}
                         >
-                          Transfer Ticket
+                          View Ticket
                         </Button>
-                        <Button
-                          className="bg-black hover:bg-gray-800 text-white border border-white hover:text-gray-200"
-                          onClick={() => handleAddToAppleWallet(ticket)}
-                        >
-                          Add to Apple Wallet
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogTrigger>
+                      <DialogContent className="bg-gray-900 text-white">
+                        <DialogHeader>
+                          <DialogTitle>{ticket.eventName} Ticket</DialogTitle>
+                          <DialogDescription className="text-gray-400">
+                            Ticket ID: {ticket.id}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex flex-col items-center space-y-4">
+                          <div className="bg-white p-4 rounded-lg">
+                            <QRCode value={ticket.id} size={200} level="H" />
+                          </div>
+                          <div className="text-center">
+                            <p>{ticket.seatInfo}</p>
+                            <p>
+                              {new Date(ticket.date).toLocaleDateString(
+                                "en-US",
+                                {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}{" "}
+                              at {ticket.time}
+                            </p>
+                            <p>{ticket.location}</p>
+                          </div>
+                        </div>
+                        <DialogFooter className="flex justify-between">
+                          <Button
+                            variant="outline"
+                            className="bg-purple-600 hover:bg-purple-700 text-white"
+                            onClick={() => {
+                              setSelectedTicket(ticket);
+                              setIsTransferDialogOpen(true);
+                            }}
+                          >
+                            Transfer Ticket
+                          </Button>
+                          <Button
+                            className="bg-black hover:bg-gray-800 text-white border border-white hover:text-gray-200"
+                            onClick={() => handleAddToAppleWallet(ticket)}
+                          >
+                            Add to Apple Wallet
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                    <Button
+                      variant="outline"
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                      onClick={() => {
+                        setSelectedTicket(ticket);
+                        setIsResellDialogOpen(true);
+                      }}
+                    >
+                      Resell
+                    </Button>
+                  </div>
                 </CardFooter>
               </Card>
             ))}
@@ -260,6 +326,50 @@ export default function WalletPage() {
                   }
                 >
                   Transfer
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog
+            open={isResellDialogOpen}
+            onOpenChange={setIsResellDialogOpen}
+          >
+            <DialogContent className="bg-gray-900 text-white">
+              <DialogHeader>
+                <DialogTitle>Resell Ticket</DialogTitle>
+                <DialogDescription className="text-gray-400">
+                  Set the new price for your ticket.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="resell-price">New Price ($)</Label>
+                  <Input
+                    id="resell-price"
+                    type="number"
+                    value={resellPrice}
+                    onChange={(e) => setResellPrice(e.target.value)}
+                    placeholder="0.00"
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  onClick={() => setIsResellDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                  onClick={() =>
+                    selectedTicket && handleResellTicket(selectedTicket.id)
+                  }
+                >
+                  List for Resale
                 </Button>
               </DialogFooter>
             </DialogContent>
