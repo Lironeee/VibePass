@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
+import Header from "@/components/header";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -156,6 +157,7 @@ export default function EventSecondaryMarket() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black text-white overflow-hidden">
+      <Header />
       <canvas ref={canvasRef} className="absolute inset-0 -z-10" />
 
       {/* Background Elements */}
