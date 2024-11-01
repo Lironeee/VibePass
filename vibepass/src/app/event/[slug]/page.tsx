@@ -28,6 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Header from "@/components/header";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },

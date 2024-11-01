@@ -13,11 +13,63 @@ import {
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 import Header from "@/components/header";
+import Link from "next/link";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
 };
+
+const realEvents = [
+  {
+    id: 1,
+    title: "Taylor Swift | The Eras Tour",
+    location: "SoFi Stadium, Los Angeles",
+    date: "August 3, 2024",
+    imageUrl:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/taylor-swift-eras-tour-RWNXzWLHGXeZrbRr8Cj8Iy3wqLNGKP.jpg",
+  },
+  {
+    id: 2,
+    title: "Beyoncé | Renaissance World Tour",
+    location: "Tottenham Hotspur Stadium, London",
+    date: "May 29, 2024",
+    imageUrl:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/beyonce-renaissance-tour-0Hs7Fy9Ue8Ij9Aq1Yl5Nt5Wd5Hs3Kl.jpg",
+  },
+  {
+    id: 3,
+    title: "Ed Sheeran | Mathematics Tour",
+    location: "MetLife Stadium, New Jersey",
+    date: "June 10, 2024",
+    imageUrl:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ed-sheeran-mathematics-tour-7Hs9Fy2Ue1Ij4Aq7Yl8Nt2Wd1Hs7Kl.jpg",
+  },
+  {
+    id: 4,
+    title: "BTS | Yet To Come",
+    location: "Allegiant Stadium, Las Vegas",
+    date: "April 8, 2024",
+    imageUrl:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bts-yet-to-come-2Hs5Fy7Ue3Ij1Aq9Yl6Nt8Wd3Hs1Kl.jpg",
+  },
+  {
+    id: 5,
+    title: "Adele | Weekends with Adele",
+    location: "The Colosseum at Caesars Palace, Las Vegas",
+    date: "July 15, 2024",
+    imageUrl:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/adele-weekends-with-adele-5Hs2Fy1Ue7Ij6Aq3Yl2Nt1Wd9Hs5Kl.jpg",
+  },
+  {
+    id: 6,
+    title: "Coldplay | Music of the Spheres World Tour",
+    location: "Wembley Stadium, London",
+    date: "August 20, 2024",
+    imageUrl:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/coldplay-music-of-the-spheres-8Hs4Fy5Ue2Ij8Aq5Yl1Nt7Wd6Hs9Kl.jpg",
+  },
+];
 
 export default function Component() {
   const eventsRef = useRef(null);
@@ -219,37 +271,41 @@ export default function Component() {
                 variant="ghost"
                 className="text-white/70 hover:text-white"
               >
-                Paris
+                All Cities
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+              {realEvents.map((event) => (
                 <motion.div
-                  key={i}
+                  key={event.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  transition={{ duration: 0.5, delay: event.id * 0.1 }}
                   whileHover={{ y: -5 }}
                   className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm transition-colors hover:border-purple-500/50"
                 >
                   <div className="aspect-[4/3] overflow-hidden">
                     <Image
-                      src={`/placeholder.svg?height=300&width=400&text=Event${i}`}
-                      alt={`Event ${i}`}
+                      src={event.imageUrl}
+                      alt={event.title}
                       width={400}
                       height={300}
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-semibold">Event Title {i}</h3>
-                    <p className="text-sm text-white/70">Location • Date</p>
+                    <h3 className="font-semibold">{event.title}</h3>
+                    <p className="text-sm text-white/70">
+                      {event.location} • {event.date}
+                    </p>
                     <div className="mt-4">
-                      <Button className="w-full rounded-full bg-white text-black hover:bg-white/90 transition-all hover:scale-105">
-                        Get Tickets
-                      </Button>
+                      <Link href={`/event/${event.id}`}>
+                        <Button className="w-full rounded-full bg-white text-black  hover:bg-white/90 transition-all hover:scale-105">
+                          Get Tickets
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>

@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
+import { ChevronDown, Menu, Search, User, X } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
@@ -42,18 +44,20 @@ export default function Header() {
       className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-xl"
     >
       <div className="container flex flex-col md:flex-row items-center justify-between py-4 md:py-6 space-y-4 md:space-y-0">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 400 }}
-        >
-          <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Capture_decran_2024-11-01_a_13.01.02-removebg-preview-d2zcMqccZyweJGCCV2DNjoFZ4k3NO9.png"
-            alt="VibePass Logo"
-            width={120}
-            height={30}
-            className="h-8 w-auto brightness-0 invert"
-          />
-        </motion.div>
+        <Link href="/">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400 }}
+          >
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Capture_decran_2024-11-01_a_13.01.02-removebg-preview-d2zcMqccZyweJGCCV2DNjoFZ4k3NO9.png"
+              alt="VibePass Logo"
+              width={120}
+              height={30}
+              className="h-8 w-auto brightness-0 invert"
+            />
+          </motion.div>
+        </Link>
         <div className="flex flex-1 items-center justify-center md:justify-end space-x-4">
           <div className="w-full max-w-[400px]">
             <div className="relative">
@@ -68,34 +72,64 @@ export default function Header() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="gap-2 text-white hover:bg-white/5 transition-colors"
+                className="gap-2 text-white hover:text-gray-50 hover:bg-black transition-colors"
               >
                 Explore
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-black/90 border-white/10 text-white">
-              <DropdownMenuItem className="focus:bg-white/10">
-                Music
-              </DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-white/10">
-                Arts
-              </DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-white/10">
-                Sports
-              </DropdownMenuItem>
+              <DropdownMenuItem className="">Music</DropdownMenuItem>
+              <DropdownMenuItem className="">Arts</DropdownMenuItem>
+              <DropdownMenuItem className="">Sports</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button
-            className="bg-white text-black hover:bg-white/90 transition-colors"
-            onClick={
-              isConnectedToPeraWallet
-                ? handleDisconnectWalletClick
-                : handleConnectWalletClick
-            }
-          >
-            {isConnectedToPeraWallet ? "Log out" : "Sign In"}
-          </Button>
+          {isConnectedToPeraWallet ? (
+            <>
+              <div className="text-white  text-base">$ 500</div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <User className="h-5 w-5 text-white" />
+                    <span className="sr-only">User menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 text-white border-gray-800 bg-gray-950"
+                >
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-gray-800" />
+                  <DropdownMenuItem className="focus:bg-gray-800 focus:text-white">
+                    <Link href="/wallet" className="flex w-full">
+                      Wallet
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-gray-800 focus:text-white">
+                    <Link href="/event/manage" className="flex w-full">
+                      Manage Events
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-gray-800" />
+                  <DropdownMenuItem className="focus:bg-gray-800 focus:text-white">
+                    <Button
+                      onClick={handleDisconnectWalletClick}
+                      className="flex w-full"
+                    >
+                      Log Out
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <Button
+              className="bg-white text-black hover:bg-white/90 transition-colors"
+              onClick={handleConnectWalletClick}
+            >
+              Sign in
+            </Button>
+          )}
         </div>
       </div>
     </motion.header>
