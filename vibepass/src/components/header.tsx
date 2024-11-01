@@ -1,120 +1,124 @@
-'use client'
+"use client";
+import { PeraWalletConnect } from "@perawallet/connect";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, Menu, Search, X } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Input } from "./ui/input";
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Menu, X } from 'lucide-react'
+const peraWallet = new PeraWalletConnect();
 
-export default function RefinedGradientHeader() {
-  const [scrollY, setScrollY] = useState(0)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+export default function Header() {
+  const [accountAddress, setAccountAddress] = useState(null);
+  const isConnectedToPeraWallet = !!accountAddress;
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    // Reconnect to the session when the component is mounted
+    peraWallet
+      .reconnectSession()
+      .then((accounts) => {
+        peraWallet.connector.on("disconnect", handleDisconnectWalletClick);
+
+        if (accounts.length) {
+          setAccountAddress(accounts[0]);
+        }
+      })
+      .catch((e) => console.log(e));
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full">
-      <div className="relative h-24 overflow-hidden bg-gradient-to-r from-[#d9b8f9] via-[#b79789] to-[#947619]">
-        <svg
-          className="absolute bottom-0 left-0 w-full h-16"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1440 320"
-          preserveAspectRatio="none"
+    <motion.header
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-xl"
+    >
+      <div className="container flex flex-col md:flex-row items-center justify-between py-4 md:py-6 space-y-4 md:space-y-0">
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 400 }}
         >
-          <defs>
-            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="rgba(217,184,249,0.3)" />
-              <stop offset="50%" stopColor="rgba(183,151,137,0.3)" />
-              <stop offset="100%" stopColor="rgba(148,118,25,0.3)" />
-            </linearGradient>
-          </defs>
-          <path
-            fill="url(#waveGradient)"
-            fillOpacity="1"
-            d={`M0,${64 + scrollY * 0.1} 
-               C320,${96 + scrollY * 0.15} 
-                 720,${32 + scrollY * 0.05} 
-                 1440,${64 + scrollY * 0.1} 
-               V${320} H0 Z`}
-          >
-            <animate 
-              attributeName="d" 
-              values={`
-                M0,${64 + scrollY * 0.1} C320,${96 + scrollY * 0.15} 720,${32 + scrollY * 0.05} 1440,${64 + scrollY * 0.1} V${320} H0 Z;
-                M0,${72 + scrollY * 0.1} C320,${88 + scrollY * 0.15} 720,${40 + scrollY * 0.05} 1440,${72 + scrollY * 0.1} V${320} H0 Z;
-                M0,${64 + scrollY * 0.1} C320,${96 + scrollY * 0.15} 720,${32 + scrollY * 0.05} 1440,${64 + scrollY * 0.1} V${320} H0 Z
-              `}
-              dur="10s"
-              repeatCount="indefinite"
-            />
-          </path>
-        </svg>
-        <div className="container relative flex h-full items-center justify-between px-4">
-          <Link href="/" className="flex items-center space-x-2">
+          <Image
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Capture_decran_2024-11-01_a_13.01.02-removebg-preview-d2zcMqccZyweJGCCV2DNjoFZ4k3NO9.png"
+            alt="VibePass Logo"
+            width={120}
+            height={30}
+            className="h-8 w-auto brightness-0 invert"
+          />
+        </motion.div>
+        <div className="flex flex-1 items-center justify-center md:justify-end space-x-4">
+          <div className="w-full max-w-[400px]">
             <div className="relative">
-              <div className="absolute inset-0 bg-white rounded-full filter blur-sm"></div>
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Capture_decran_2024-11-01_a_13.01.02-W5RreiRP9wkDyKNQzw4BNhOU9XYcwp.png"
-                alt="VIBEPASS Logo"
-                width={140}
-                height={50}
-                className="h-10 w-auto relative"
-                priority
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/50" />
+              <Input
+                placeholder="Search for events, artists, or venues..."
+                className="pl-8 rounded-full bg-white/5 border-white/10 focus:border-purple-500/50 transition-colors placeholder:text-white/50"
               />
             </div>
-          </Link>
-          <nav className="hidden md:flex items-center space-x-8">
-            {['About', 'Events', 'Contact'].map((item) => (
-              <Link
-                key={item}
-                href={`/${item.toLowerCase()}`}
-                className="text-base font-medium text-white hover:text-[#947619] transition-colors relative group"
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="gap-2 text-white hover:bg-white/5 transition-colors"
               >
-                {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#947619] transition-all group-hover:w-full"></span>
-              </Link>
-            ))}
-            <Button
-              className="bg-[#947619] text-white hover:bg-[#d9b8f9] hover:text-[#947619] transition-colors shadow-lg shadow-[#947619]/20 text-base px-6 py-2"
-            >
-              Get Started
-            </Button>
-          </nav>
+                Explore
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-black/90 border-white/10 text-white">
+              <DropdownMenuItem className="focus:bg-white/10">
+                Music
+              </DropdownMenuItem>
+              <DropdownMenuItem className="focus:bg-white/10">
+                Arts
+              </DropdownMenuItem>
+              <DropdownMenuItem className="focus:bg-white/10">
+                Sports
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button
-            variant="ghost"
-            className="md:hidden text-white hover:bg-white/20"
-            size="icon"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="bg-white text-black hover:bg-white/90 transition-colors"
+            onClick={
+              isConnectedToPeraWallet
+                ? handleDisconnectWalletClick
+                : handleConnectWalletClick
+            }
           >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            <span className="sr-only">Toggle menu</span>
+            {isConnectedToPeraWallet ? "Log out" : "Sign In"}
           </Button>
         </div>
       </div>
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-gradient-to-r from-[#d9b8f9] via-[#b79789] to-[#947619] backdrop-blur-md">
-          <nav className="container py-4">
-            {['About', 'Events', 'Contact'].map((item) => (
-              <Link
-                key={item}
-                href={`/${item.toLowerCase()}`}
-                className="block py-2 text-base font-medium text-white hover:text-[#947619] transition-colors"
-              >
-                {item}
-              </Link>
-            ))}
-            <Button
-              className="mt-4 w-full bg-[#947619] text-white hover:bg-[#d9b8f9] hover:text-[#947619] transition-colors shadow-lg shadow-[#947619]/20 text-base px-6 py-2"
-            >
-              Get Started
-            </Button>
-          </nav>
-        </div>
-      )}
-    </header>
-  )
+    </motion.header>
+  );
+
+  function handleConnectWalletClick() {
+    peraWallet
+      .connect()
+      .then((newAccounts) => {
+        peraWallet.connector.on("disconnect", handleDisconnectWalletClick);
+
+        setAccountAddress(newAccounts[0]);
+      })
+      .catch((error) => {
+        if (error?.data?.type !== "CONNECT_MODAL_CLOSED") {
+          console.log(error);
+        }
+      });
+  }
+
+  function handleDisconnectWalletClick() {
+    peraWallet.disconnect();
+
+    setAccountAddress(null);
+  }
 }
