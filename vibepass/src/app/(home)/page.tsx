@@ -1,59 +1,62 @@
-'use client'
+"use client";
 
-import Image from "next/image"
-import { Search, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import Image from "next/image";
+import { Search, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef, useEffect } from "react"
+} from "@/components/ui/dropdown-menu";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useEffect } from "react";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-}
+  visible: { opacity: 1, y: 0 },
+};
 
 export default function Component() {
-  const eventsRef = useRef(null)
+  const eventsRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: eventsRef,
-    offset: ["start end", "end start"]
-  })
+    offset: ["start end", "end start"],
+  });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1])
-  const scale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1])
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1]);
 
   useEffect(() => {
     const createStar = () => {
-      const star = document.createElement('div')
-      star.className = 'star'
-      star.style.left = `${Math.random() * 100}vw`
-      star.style.top = `${Math.random() * 100}vh`
-      star.style.animationDuration = `${Math.random() * 3 + 2}s`
-      const starryBackground = document.getElementById('starry-background')
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = `${Math.random() * 100}vw`;
+      star.style.top = `${Math.random() * 100}vh`;
+      star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      const starryBackground = document.getElementById("starry-background");
       if (starryBackground) {
-        starryBackground.appendChild(star)
+        starryBackground.appendChild(star);
       }
 
       setTimeout(() => {
-        star.remove()
-      }, 5000)
-    }
+        star.remove();
+      }, 5000);
+    };
 
-    const interval = setInterval(createStar, 200)
+    const interval = setInterval(createStar, 200);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-black to-purple-900 text-white overflow-hidden">
       {/* Starry Background */}
-      <div id="starry-background" className="absolute inset-0 overflow-hidden pointer-events-none" />
+      <div
+        id="starry-background"
+        className="absolute inset-0 overflow-hidden pointer-events-none"
+      />
 
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10">
@@ -76,14 +79,14 @@ export default function Component() {
               animate={{
                 d: [
                   "M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,277.3C672,288,768,288,864,277.3C960,267,1056,245,1152,229.3C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z",
-                  "M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,266.7C960,267,1056,245,1152,234.7C1248,224,1344,224,1392,224L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-                ]
+                  "M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,266.7C960,267,1056,245,1152,234.7C1248,224,1344,224,1392,224L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z",
+                ],
               }}
               transition={{
                 repeat: Infinity,
                 repeatType: "reverse",
                 duration: 10,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
             />
             <defs>
@@ -99,7 +102,7 @@ export default function Component() {
         {/* Gradient Overlays */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,#E6D5F2,transparent_70%)] opacity-40" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,#F0E6FA,transparent_70%)] opacity-40" />
-        
+
         {/* Animated Blobs */}
         <motion.div
           className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-[64px] opacity-50"
@@ -111,7 +114,7 @@ export default function Component() {
           transition={{
             duration: 8,
             repeat: Infinity,
-            repeatType: "reverse"
+            repeatType: "reverse",
           }}
         />
         <motion.div
@@ -124,7 +127,7 @@ export default function Component() {
           transition={{
             duration: 10,
             repeat: Infinity,
-            repeatType: "reverse"
+            repeatType: "reverse",
           }}
         />
 
@@ -133,7 +136,7 @@ export default function Component() {
           className="absolute bottom-0 left-0 right-0 h-64 opacity-40"
           style={{
             background: "linear-gradient(to bottom, transparent, #E6D5F2)",
-            clipPath: "url(#wave2)"
+            clipPath: "url(#wave2)",
           }}
         >
           <svg width="0" height="0">
@@ -144,14 +147,14 @@ export default function Component() {
                   animate={{
                     d: [
                       "M0,0.5 C0.33,0.33 0.66,0.66 1,0.5 L1,1 L0,1 Z",
-                      "M0,0.5 C0.33,0.66 0.66,0.33 1,0.5 L1,1 L0,1 Z"
-                    ]
+                      "M0,0.5 C0.33,0.66 0.66,0.33 1,0.5 L1,1 L0,1 Z",
+                    ],
                   }}
                   transition={{
                     repeat: Infinity,
                     repeatType: "reverse",
                     duration: 8,
-                    ease: "easeInOut"
+                    ease: "easeInOut",
                   }}
                 />
               </clipPath>
@@ -160,14 +163,14 @@ export default function Component() {
         </motion.div>
       </div>
 
-      <motion.header 
+      <motion.header
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
         className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-xl"
       >
         <div className="container flex flex-col md:flex-row items-center justify-between py-4 md:py-6 space-y-4 md:space-y-0">
-          <motion.div 
+          <motion.div
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400 }}
           >
@@ -191,56 +194,65 @@ export default function Component() {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="gap-2 text-white hover:bg-white/5 transition-colors">
+                <Button
+                  variant="ghost"
+                  className="gap-2 text-white hover:bg-white/5 transition-colors"
+                >
                   Explore
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-black/90 border-white/10 text-white">
-                <DropdownMenuItem className="focus:bg-white/10">Music</DropdownMenuItem>
-                <DropdownMenuItem className="focus:bg-white/10">Arts</DropdownMenuItem>
-                <DropdownMenuItem className="focus:bg-white/10">Sports</DropdownMenuItem>
+                <DropdownMenuItem className="focus:bg-white/10">
+                  Music
+                </DropdownMenuItem>
+                <DropdownMenuItem className="focus:bg-white/10">
+                  Arts
+                </DropdownMenuItem>
+                <DropdownMenuItem className="focus:bg-white/10">
+                  Sports
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button className="bg-white text-black hover:bg-white/90 transition-colors">Sign In</Button>
+            <Button className="bg-white text-black hover:bg-white/90 transition-colors">
+              Sign In
+            </Button>
           </div>
         </div>
       </motion.header>
 
-      <main className="relative w-full">
-        <section className="container px-4 py-12 md:py-24 lg:py-32">
-          <motion.div 
+      <main className="relative w-full flex flex-col items-center">
+        <section className="container px-4 py-12 md:py-24 lg:py-32 flex flex-col justify-center items-center">
+          <motion.div
             initial="hidden"
             animate="visible"
             variants={{
               visible: {
                 transition: {
-                  staggerChildren: 0.2
-                }
-              }
+                  staggerChildren: 0.2,
+                },
+              },
             }}
             className="text-center"
           >
-            <motion.h1 
+            <motion.h1
               variants={fadeInUp}
-              className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl"
+              className="text-4xl font-bold text-center tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl"
             >
               Get Your Ticket,
               <br />
               Create Memories
             </motion.h1>
-            <motion.p 
+            <motion.p
               variants={fadeInUp}
               className="mt-6 max-w-[600px] mx-auto text-white/70 text-xl"
             >
-              Discover the best events near you. Your next unforgettable experience is just a click away.
+              Discover the best events near you. Your next unforgettable
+              experience is just a click away.
             </motion.p>
-            <motion.div 
-              variants={fadeInUp}
-              className="mt-8"
-            >
-              <Button 
-                size="lg" 
+            <motion.div variants={fadeInUp} className="mt-8">
+              <Button
+                size="lg"
                 className="rounded-full bg-white text-black hover:bg-white/90 transition-all hover:scale-105"
               >
                 Explore Events
@@ -249,14 +261,19 @@ export default function Component() {
           </motion.div>
         </section>
 
-        <section className="container px-4 py-12 md:py-24 lg:py-32" ref={eventsRef}>
-          <motion.div 
-            style={{ opacity, scale }}
-            className="space-y-12"
-          >
+        <section
+          className="container px-4 py-12 md:py-24 lg:py-32"
+          ref={eventsRef}
+        >
+          <motion.div style={{ opacity, scale }} className="space-y-12">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl">Popular Events</h2>
-              <Button variant="ghost" className="text-white/70 hover:text-white">
+              <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl">
+                Popular Events
+              </h2>
+              <Button
+                variant="ghost"
+                className="text-white/70 hover:text-white"
+              >
                 Paris
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
@@ -293,7 +310,6 @@ export default function Component() {
                 </motion.div>
               ))}
             </div>
-          
           </motion.div>
         </section>
       </main>
@@ -309,11 +325,17 @@ export default function Component() {
         }
 
         @keyframes twinkle {
-          0% { opacity: 0; }
-          50% { opacity: 1; }
-          100% { opacity: 0; }
+          0% {
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+          }
         }
       `}</style>
     </div>
-  )
+  );
 }
