@@ -164,6 +164,14 @@ export default function Component() {
               >
                 Get Tickets Now
               </Button>
+              <Link href={"./test/resell"}>
+                <Button
+                  size="lg"
+                  className="rounded-full bg-white text-black hover:bg-white/90"
+                >
+                  Trade on secondary market
+                </Button>
+              </Link>
               <Button
                 size="lg"
                 variant="outline"
